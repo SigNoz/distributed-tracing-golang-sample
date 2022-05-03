@@ -1,5 +1,7 @@
 package datastore
 
+import "context"
+
 type InsertParams struct {
 	Query string
 	Vars  []interface{}
@@ -17,8 +19,8 @@ type UpdateParams struct {
 }
 
 type DB interface {
-	InsertOne(InsertParams) (int64, error)
-	SelectOne(SelectParams) error
-	UpdateOne(UpdateParams) error
+	InsertOne(context.Context, InsertParams) (int64, error)
+	SelectOne(context.Context, SelectParams) error
+	UpdateOne(context.Context, UpdateParams) error
 	Close()
 }

@@ -28,8 +28,8 @@ func transferAmount(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// send the request to user service
-	url := fmt.Sprintf("http://localhost:%d/users/%s", userServicePort(), userID)
-	resp, err := utils.SendRequest(http.MethodPut, url, payload)
+	url := fmt.Sprintf("http://%s/users/%s", userUrl, userID)
+	resp, err := utils.SendRequest(r.Context(), http.MethodPut, url, payload)
 	if err != nil {
 		utils.WriteErrorResponse(w, http.StatusInternalServerError, err)
 		return

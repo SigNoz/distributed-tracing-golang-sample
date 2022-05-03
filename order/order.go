@@ -32,8 +32,8 @@ func createOrder(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// get user details from user service
-	url := fmt.Sprintf("http://localhost:%d/users/%d", userServicePort(), request.UserID)
-	userResponse, err := utils.SendRequest(http.MethodGet, url, nil)
+	url := fmt.Sprintf("http://%s/users/%d", userUrl, request.UserID)
+	userResponse, err := utils.SendRequest(r.Context(), http.MethodGet, url, nil)
 	if err != nil {
 		log.Printf("%v", err)
 		utils.WriteResponse(w, http.StatusInternalServerError, err)
@@ -65,23 +65,29 @@ func createOrder(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// insert the order into order table
-	id, err := db.InsertOne(datastore.InsertParams{
+	ctx, insertSpan := tracer.Start(r.Context(), "insert order")
+	id, err := db.InsertOne(ctx, datastore.InsertParams{
 		Query: `insert into ORDERS(ACCOUNT, PRODUCT_NAME, PRICE, ORDER_STATUS) VALUES (?,?,?, ?)`,
 		Vars:  []interface{}{user.Account, request.ProductName, request.Price, "SUCCESS"},
 	})
 	if err != nil {
 		utils.WriteErrorResponse(w, http.StatusInternalServerError, err)
+		insertSpan.End()
 		return
 	}
+	insertSpan.End()
 
 	// update the pending amount in user table
-	if err := db.UpdateOne(datastore.UpdateParams{
+	ctx, updateSpan := tracer.Start(r.Context(), "update user amount")
+	if err := db.UpdateOne(ctx, datastore.UpdateParams{
 		Query: `update USERS set AMOUNT = AMOUNT - ? where ID = ?`,
 		Vars:  []interface{}{request.Price, user.ID},
 	}); err != nil {
 		utils.WriteErrorResponse(w, http.StatusInternalServerError, err)
+		updateSpan.End()
 		return
 	}
+	updateSpan.End()
 
 	// send response
 	response := request

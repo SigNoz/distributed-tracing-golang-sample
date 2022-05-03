@@ -26,7 +26,9 @@ func createUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	id, err := db.InsertOne(datastore.InsertParams{
+	ctx, span := tracer.Start(r.Context(), "create user")
+	defer span.End()
+	id, err := db.InsertOne(ctx, datastore.InsertParams{
 		Query: `INSERT INTO USERS(USER_NAME, ACCOUNT) VALUES (?, ?)`,
 		Vars:  []interface{}{u.UserName, u.Account},
 	})
@@ -42,7 +44,10 @@ func createUser(w http.ResponseWriter, r *http.Request) {
 func getUser(w http.ResponseWriter, r *http.Request) {
 	userID := mux.Vars(r)["userID"]
 	var u user
-	if err := db.SelectOne(datastore.SelectParams{
+
+	ctx, span := tracer.Start(r.Context(), "get user")
+	defer span.End()
+	if err := db.SelectOne(ctx, datastore.SelectParams{
 		Query:   `select ID, USER_NAME, ACCOUNT, AMOUNT from USERS where ID = ?`,
 		Filters: []interface{}{userID},
 		Result:  []interface{}{&u.ID, &u.UserName, &u.Account, &u.Amount},
@@ -60,7 +65,10 @@ func updateUser(w http.ResponseWriter, r *http.Request) {
 	if err := utils.ReadBody(w, r, &data); err != nil {
 		return
 	}
-	if err := db.UpdateOne(datastore.UpdateParams{
+
+	ctx, span := tracer.Start(r.Context(), "update user amount")
+	defer span.End()
+	if err := db.UpdateOne(ctx, datastore.UpdateParams{
 		Query: `update USERS set AMOUNT = AMOUNT + ? where ID = ?`,
 		Vars:  []interface{}{data.Amount, userID},
 	}); err != nil {
