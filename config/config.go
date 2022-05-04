@@ -48,7 +48,6 @@ func Init(serviceName string) *sdktrace.TracerProvider {
 	traceProvider := sdktrace.NewTracerProvider(
 		sdktrace.WithSampler(sdktrace.AlwaysSample()),
 		sdktrace.WithSpanProcessor(sdktrace.NewBatchSpanProcessor(exporter)),
-		sdktrace.WithSyncer(exporter),
 		sdktrace.WithResource(resource.NewWithAttributes(semconv.SchemaURL, semconv.ServiceNameKey.String(serviceName))),
 	)
 

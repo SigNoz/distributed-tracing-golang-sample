@@ -81,7 +81,7 @@ func New() (DB, error) {
 }
 
 func (db sqlDB) Close() {
-	db.Close()
+	db.DB.Close()
 }
 
 func (db sqlDB) InsertOne(ctx context.Context, p InsertParams) (int64, error) {
