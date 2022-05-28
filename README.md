@@ -14,7 +14,8 @@ For this you would need the following:
 - [Signoz](https://signoz.io/)
 
 ## Tracing flow
-![Distributed tracing](tracing-flow.png)
+![distributed_tracing_app_otel_signoz](https://user-images.githubusercontent.com/83692067/170809287-f930245e-55b9-4646-8e71-74dfe74e036e.png)
+
 
 ## Running the code
 
