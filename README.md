@@ -19,13 +19,25 @@ For this you would need the following:
 
 ## Running the code
 
-Start the signoz server following the instructions:
+Start the SigNoz server following the instructions:
 
 ```sh
 git clone -b main https://github.com/SigNoz/signoz.git
 cd signoz/deploy/
 ./install.sh
 ```
+
+### Using `docker-compose`
+
+```bash
+docker-compose up -d
+```
+
+View traces and metrics at http://localhost:3301/
+
+_**Note**: Replace `OTEL_EXPORTER_OTLP_ENDPOINT` environment variable with SigNoz OTLP endpoint, if SigNoz not running on host machine._
+
+### Using Source
 
 Configuration for microservices can be updated in .env file
 
@@ -69,7 +81,7 @@ go run ./order
 Start the frontend using following command. For installation of `serve` see: [https://www.npmjs.com/package/serve](https://www.npmjs.com/package/serve)
 
 ```sh
-serve -l 5000 frontend
+serve -l 5000 frontend/src
 ```
 
 View traces and metrics at http://localhost:3301/
