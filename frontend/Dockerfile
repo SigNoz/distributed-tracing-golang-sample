@@ -9,7 +9,6 @@ COPY frontend .
 
 # Move configuration files to the correct location and cleanup unnecessary files
 RUN mv nginx.conf /etc/nginx/conf.d/default.conf && \
-    mv src/docker-config.js src/config.js && \
     rm -rf Dockerfile
 
 # Expose the port used by Nginx
