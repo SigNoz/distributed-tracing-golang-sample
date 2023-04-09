@@ -1,13 +1,16 @@
 # Base image
 FROM nginx:1.23.4-alpine
 
+# Set the working directory
+WORKDIR /usr/share/nginx/html
+
 # Copy the static files to the image
-COPY frontend /usr/share/nginx/html
+COPY frontend .
 
 # Move configuration files to the correct location and cleanup unnecessary files
-RUN mv frontend/nginx.conf /etc/nginx/conf.d/default.conf && \
-    mv frontend/src/docker-config.js frontend/src/config.js && \
-    rm -rf /usr/share/nginx/Dockerfile
+RUN mv nginx.conf /etc/nginx/conf.d/default.conf && \
+    mv src/docker-config.js src/config.js && \
+    rm -rf Dockerfile
 
 # Expose the port used by Nginx
 EXPOSE 80
