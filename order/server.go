@@ -59,7 +59,7 @@ func initDB() {
 
 func main() {
 	// read the config from .env file
-	if err := godotenv.Load(); err != nil {
+	if err := godotenv.Load(); err != nil && !os.IsNotExist(err) {
 		log.Fatal("Error loading .env file", err)
 	}
 	orderUrl = os.Getenv("ORDER_URL")

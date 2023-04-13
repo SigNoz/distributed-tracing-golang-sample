@@ -34,7 +34,7 @@ type sqlDB struct {
 
 func New() (DB, error) {
 	// read the config from .env file
-	if err := godotenv.Load(); err != nil {
+	if err := godotenv.Load(); err != nil && !os.IsNotExist(err) {
 		log.Fatal("Error loading .env file", err)
 	}
 
